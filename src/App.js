@@ -1,25 +1,70 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import ExpenseList from "./components/ExpenseList";
+import ExpenseForm from "./components/ExpenseForm";
+import Alert from "./components/Alert";
+import uuid from "uuid/v4";
+
+// react hooks allows to use state in the functional components
+// import useState()
+// function returns [] with two values
+// the actual value of the state
+// function for updates/control
+// default value
+
+const initialExpenses = [
+  { id: uuid(), charge: "rent", amount: 1600 },
+  { id: uuid(), charge: "car", amount: 400 },
+  { id: uuid(), charge: "credit card", amount: 1200 }
+];
 
 function App() {
+  // ************* state values ***************
+  // all expenses, add expense
+  const [expenses, setExpenses] = useState(initialExpenses);
+
+  //single expense
+  const [charge, setCharge] = useState("");
+
+  //single amount
+  const [amount, setAmount] = useState("");
+
+  // ************* functionality ***************
+
+  const handleCharge = e => {
+    setCharge(e.target.value);
+  };
+  const handleAmount = e => {
+    setAmount(e.target.value);
+  };
+  const handleSubmit = e => {
+    e.preventDefault();
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Alert />
+      <h1>Budget Calculator</h1>
+      <main className="App">
+        <ExpenseForm
+          charge={charge}
+          amount={amount}
+          handleAmount={handleAmount}
+          handleCharge={handleCharge}
+          handleSubmit={handleSubmit}
+        />
+        <ExpenseList expenses={expenses} />
+      </main>
+      <h1>
+        total spending:{" "}
+        <span className="total">
+          $
+          {expenses.reduce((acc, curr) => {
+            return (acc += curr.amount);
+          }, 0)}
+        </span>
+      </h1>
+    </>
   );
 }
 
